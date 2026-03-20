@@ -68,7 +68,7 @@ WORKDIR /app
 RUN apt-get update && \
     DEBIAN_FRONTEND=noninteractive apt-get upgrade -y --no-install-recommends && \
     DEBIAN_FRONTEND=noninteractive apt-get install -y --no-install-recommends \
-      procps hostname curl git lsof openssl
+      procps hostname curl git lsof openssl gosu
 RUN chown node:node /app
 COPY --from=runtime-assets --chown=node:node /app/dist ./dist
 COPY --from=runtime-assets --chown=node:node /app/node_modules ./node_modules
@@ -110,10 +110,9 @@ RUN if [ -n "$OPENCLAW_INSTALL_BROWSER" ]; then \
 
 RUN ln -sf /app/openclaw.mjs /usr/local/bin/openclaw && chmod 755 /app/openclaw.mjs
 ENV NODE_ENV=production
-USER node
-# Pasamos a modo administrador para arreglar los permisos
-USER root
-RUN mkdir -p /data/.openclaw && chown -R node:node /data && chmod -R 777 /data
-# Volvemos al usuario normal para que el agente trabaje tranquilo
-USER node
+COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
+RUN chmod 755 /usr/local/bin/docker-entrypoint.sh
+# Run as root so the entrypoint can fix /data permissions after volume mount,
+# then drop to the node user via gosu before executing the application.
+ENTRYPOINT ["docker-entrypoint.sh"]
 CMD ["node", "openclaw.mjs", "gateway", "--allow-unconfigured"]

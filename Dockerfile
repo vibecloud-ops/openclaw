@@ -111,4 +111,9 @@ RUN if [ -n "$OPENCLAW_INSTALL_BROWSER" ]; then \
 RUN ln -sf /app/openclaw.mjs /usr/local/bin/openclaw && chmod 755 /app/openclaw.mjs
 ENV NODE_ENV=production
 USER node
+# Pasamos a modo administrador para arreglar los permisos
+USER root
+RUN mkdir -p /data/.openclaw && chown -R node:node /data && chmod -R 777 /data
+# Volvemos al usuario normal para que el agente trabaje tranquilo
+USER node
 CMD ["node", "openclaw.mjs", "gateway", "--allow-unconfigured"]

@@ -115,4 +115,35 @@ RUN chmod 755 /usr/local/bin/docker-entrypoint.sh
 # Run as root so the entrypoint can fix /data permissions after volume mount,
 # then drop to the node user via gosu before executing the application.
 ENTRYPOINT ["docker-entrypoint.sh"]
-CMD ["node", "openclaw.mjs", "gateway", "--allow-unconfigured", "--bind", "auto", "--port", "${PORT:-3000}"]
+# Crear archivo de configuración que sobreescribe todo
+RUN mkdir -p /data/.openclaw && cat > /data/.openclaw/config.json << 'EOF'
+{
+  "bind": "0.0.0.0",
+  "port": 18789,
+  "modelName": "google/gemini-1.5-flash",
+  "gateway": {
+    "controlUi": {
+      "allowedOrigins": ["*"],
+      "dangerouslyAllowHostHeaderOriginFallback": true
+    }
+  }
+}
+EOF
+```
+
+---
+
+## 🧪 Cómo verificar que funcionó
+
+Cuando el deploy termine, en los logs deberías ver algo como:
+```
+✓ Listening on 0.0.0.0:18789   ← debe decir 0.0.0.0, NO 127.0.0.1
+✓ Model: google/gemini-1.5-flash
+✓ Control UI available at http://...
+CMD ["node", "openclaw.mjs", "gateway", \
+  "--allow-unconfigured", \
+  "--bind", "0.0.0.0", \
+  "--port", "18789", \
+  "--model", "google/gemini-1.5-flash", \
+  "--gateway.controlUi.allowedOrigins", "*", \
+  "--gateway.controlUi.dangerouslyAllowHostHeaderOriginFallback", "true"]

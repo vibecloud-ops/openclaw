@@ -113,4 +113,4 @@ ENV NODE_ENV=production
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 RUN chmod 755 /usr/local/bin/docker-entrypoint.sh
 ENTRYPOINT ["docker-entrypoint.sh"]
-CMD node openclaw.mjs gateway --allow-unconfigured --bind 0.0.0.0 --port ${PORT:-18789} --model google/gemini-1.5-flash --gateway.controlUi.allowedOrigins "*" --gateway.controlUi.dangerouslyAllowHostHeaderOriginFallback true
+CMD ["node", "openclaw.mjs", "gateway", "--allow-unconfigured", "--bind", "0.0.0.0", "--port", "18789"]

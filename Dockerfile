@@ -140,10 +140,4 @@ Cuando el deploy termine, en los logs deberías ver algo como:
 ✓ Listening on 0.0.0.0:18789   ← debe decir 0.0.0.0, NO 127.0.0.1
 ✓ Model: google/gemini-1.5-flash
 ✓ Control UI available at http://...
-CMD ["node", "openclaw.mjs", "gateway", \
-  "--allow-unconfigured", \
-  "--bind", "0.0.0.0", \
-  "--port", "18789", \
-  "--model", "google/gemini-1.5-flash", \
-  "--gateway.controlUi.allowedOrigins", "*", \
-  "--gateway.controlUi.dangerouslyAllowHostHeaderOriginFallback", "true"]
+CMD node openclaw.mjs gateway --allow-unconfigured --bind 0.0.0.0 --port ${PORT:-18789} --model google/gemini-1.5-flash --gateway.controlUi.allowedOrigins "*" --gateway.controlUi.dangerouslyAllowHostHeaderOriginFallback true

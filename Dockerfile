@@ -115,4 +115,4 @@ RUN chmod 755 /usr/local/bin/docker-entrypoint.sh
 # Run as root so the entrypoint can fix /data permissions after volume mount,
 # then drop to the node user via gosu before executing the application.
 ENTRYPOINT ["docker-entrypoint.sh"]
-CMD ["node", "openclaw.mjs", "gateway", "--allow-unconfigured"]
+CMD ["node", "openclaw.mjs", "gateway", "--allow-unconfigured", "--bind", "auto", "--port", "${PORT:-3000}"]

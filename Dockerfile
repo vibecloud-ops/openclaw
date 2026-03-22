@@ -254,6 +254,13 @@ USER node
 #   - GET /healthz (liveness) and GET /readyz (readiness)
 #   - aliases: /health and /ready
 # For external access from host/ingress, override bind to "lan" and set auth.
+
+# Instala OpenClaw y sus dependencias
+RUN apt-get update && apt-get install -y openclaw
+
+# Comando para ejecutar OpenClaw Gateway
+CMD ["openclaw", "gateway"]
+
 HEALTHCHECK --interval=3m --timeout=10s --start-period=15s --retries=3 \
   CMD node -e "fetch('http://127.0.0.1:18789/healthz').then((r)=>process.exit(r.ok?0:1)).catch(()=>process.exit(1))"
 CMD ["node", "openclaw.mjs", "gateway", "--allow-unconfigured"]

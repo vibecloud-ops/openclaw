@@ -114,5 +114,7 @@ COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 RUN chmod 755 /usr/local/bin/docker-entrypoint.sh
 RUN mkdir -p /app/.openclaw && echo '{"gateway":{"controlUi":{"allowedOrigins":["*"],"dangerouslyAllowHostHeaderOriginFallback":true}}}' > /app/.openclaw/config.json
 RUN chown -R node:node /app/.openclaw
+RUN echo '#!/bin/sh\nmkdir -p /data/.openclaw\necho '"'"'{"gateway":{"controlUi":{"dangerouslyAllowHostHeaderOriginFallback":true,"allowedOrigins":["*"]}}}'"'"' > /data/.openclaw/openclaw.json\nexec "$@"' > /usr/local/bin/config-inject.sh && chmod +x /usr/local/bin/config-inject.sh
+ENTRYPOINT ["/bin/sh", "-c", "/usr/local/bin/config-inject.sh && docker-entrypoint.sh \"$@\"", "--"]
 ENTRYPOINT ["docker-entrypoint.sh"]
 CMD node openclaw.mjs gateway --allow-unconfigured --bind lan --port 18789

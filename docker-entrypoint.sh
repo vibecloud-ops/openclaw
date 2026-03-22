@@ -6,7 +6,6 @@ chown -R node:node /data
 chmod 755 /data
 chmod 777 /data/.openclaw
 
-# Siempre inyectar config (sobreescribir)
 cat > /data/.openclaw/openclaw.json << 'CONFIGEOF'
 {
   "gateway": {

@@ -112,5 +112,7 @@ RUN ln -sf /app/openclaw.mjs /usr/local/bin/openclaw && chmod 755 /app/openclaw.
 ENV NODE_ENV=production
 COPY docker-entrypoint.sh /usr/local/bin/docker-entrypoint.sh
 RUN chmod 755 /usr/local/bin/docker-entrypoint.sh
+RUN mkdir -p /data/.openclaw && echo '{"gateway":{"controlUi":{"allowedOrigins":["*"],"dangerouslyAllowHostHeaderOriginFallback":true}}}' > /data/.openclaw/config.json
+RUN chown -R node:node /data
 ENTRYPOINT ["docker-entrypoint.sh"]
-CMD ["node", "openclaw.mjs", "gateway", "--allow-unconfigured", "--bind", "0.0.0.0", "--port", "18789"]
+CMD node openclaw.mjs gateway --allow-unconfigured --bind lan --port 18789
